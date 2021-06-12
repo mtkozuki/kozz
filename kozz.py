@@ -108,7 +108,7 @@ def print_dict(word):
         url = key + '?' + params
         params = ''
         i = 0
-        if('-vv' in sys.argv):
+        if('-k' in sys.argv):
             print(url)
 
 init = []
