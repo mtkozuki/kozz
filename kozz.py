@@ -17,6 +17,9 @@ def extract_domain(url):
             
         domain = domain + url[i]
         i = i + 1
+    output.append(domain)
+    output.append(i)
+    return output
 
 def extract_path(url, checkpoint):
     i = checkpoint
@@ -30,6 +33,9 @@ def extract_path(url, checkpoint):
             return output
         path = path + url[i]
         i = i + 1
+    output.append(path)
+    output.append(i)
+    return output
 
 def extract_parameters(url, checkpoint):
     i = checkpoint + 1
@@ -55,10 +61,21 @@ def extract_sections(url):
     parameters = []
 
     domain = extract_domain(url)
-    path = extract_path(url, domain[1])
-    parameters = extract_parameters(url, path[1])
 
+    if (domain[1] < len(url)):
+        path = extract_path(url, domain[1])
+    else:
+        print(url)
+        return 0
+
+    if (path[1] < len(url)):
+        parameters = extract_parameters(url, path[1])
+    else:
+        print(url)
+        return 0
+    
     append_dict(domain[0], path[0], parameters)
+    return 1
 
 def append_dict(domain,path,parameters):
     i = 0
@@ -88,12 +105,22 @@ def print_dict(word):
         url = key + '?' + params
         params = ''
         i = 0
-        print(url)
+        if('-vv' in sys.argv):
+            print(url)
 
+urls_processed = 0
 urls = {}
 file1 = open(sys.argv[1], 'r')
 Lines = file1.readlines()
 for line in Lines:
-    extract_sections(str(line.strip()))
+    x = extract_sections(str(line.strip()))
+    if (x != 1):
+        urls_processed = urls_processed + 1
+
 
 print_dict('FUZZ')
+if ('-v' in sys.argv or '-vv' in sys.argv):
+    print("Total Urls: ", len(Lines))
+    print("Urls not processed: ", urls_processed)
+    print("Unique endpoints: ", len(urls))
+
