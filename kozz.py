@@ -49,7 +49,8 @@ def extract_parameters(url, checkpoint):
             parameters.append(param)
             param = ''
         if (j):
-            param = param + url[i]
+            if (url[i] != '&'):
+                param = param + url[i]
         if (url[i] == '&'):
             j = True
         i = i + 1
@@ -65,13 +66,15 @@ def extract_sections(url):
     if (domain[1] < len(url)):
         path = extract_path(url, domain[1])
     else:
-        print(url)
+        #print(url)
         return 0
 
     if (path[1] < len(url)):
         parameters = extract_parameters(url, path[1])
+        for i in parameters:
+            set_of_params.add(i)
     else:
-        print(url)
+        #print(url)
         return 0
     
     append_dict(domain[0], path[0], parameters)
@@ -108,6 +111,8 @@ def print_dict(word):
         if('-vv' in sys.argv):
             print(url)
 
+init = []
+set_of_params = set(init)
 urls_processed = 0
 urls = {}
 file1 = open(sys.argv[1], 'r')
@@ -117,8 +122,13 @@ for line in Lines:
     if (x != 1):
         urls_processed = urls_processed + 1
 
-
-print_dict('FUZZ')
+if('-k' in sys.argv):
+    print_dict('FUZZ')
+if ('--params' in sys.argv):
+    list_of_params = list(set_of_params)
+    for i in list_of_params:
+        print(i)
+    print()
 if ('-v' in sys.argv or '-vv' in sys.argv):
     print("Total Urls: ", len(Lines))
     print("Urls not processed: ", urls_processed)
